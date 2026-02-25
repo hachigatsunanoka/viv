@@ -1,5 +1,7 @@
 # viv
 
+![viv](assets/images/viv_logo.png)
+
 An infinite canvas whiteboard for video and image annotation, built with Tauri 2 + React 19.
 
 ## Features
@@ -74,3 +76,7 @@ npm run tauri dev
 # Build
 npm run tauri build
 ```
+
+## License
+
+[MIT](LICENSE)
