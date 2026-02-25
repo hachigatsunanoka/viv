@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "viv",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "identifier": "io.github.hachigatsunanoka.viv",
   "build": {
     "frontendDist": "../dist",
@@ -37,7 +37,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZDMjcxNTVEQTUwMkYyMTkKUldRWjhnS2xYUlVuL0NaeEJvM3FSWGRteHVFK0E5Ukw4VGs5T2xpR1VoQnd3OFJpdThab3lRcHoK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDRCM0MzOUNERkVERjJERDMKUldUVExkLyt6VGs4UzlDcUVjcG94K2d3bUtnOTJJK1NrWUVqMDRwUldlSExkTFpseGNiZXpSbmYK",
       "endpoints": [
         "https://github.com/hachigatsunanoka/viv/releases/latest/download/latest.json"
       ]
