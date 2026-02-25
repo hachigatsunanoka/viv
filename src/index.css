@@ -1,0 +1,130 @@
+:root {
+  --font-ui:        'JetBrains Mono', 'Courier New', monospace;
+  --font-mono:      'JetBrains Mono', monospace;
+  --font-node-sans: system-ui, sans-serif;
+  --font-node-mono: monospace;
+  font-family: var(--font-ui);
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* --- Backgrounds --- */
+  --color-bg-canvas:      #ffffff;
+  --color-bg-canvas-dot:  #cccccc;
+  --color-bg-primary:     #ffffff;
+  --color-bg-secondary:   #f5f5f7;
+  --color-bg-tertiary:    #f0f0f2;
+  --color-bg-overlay:     rgba(245, 245, 247, 0.96);
+  --color-bg-hover:       rgba(0, 0, 0, 0.05);
+  --color-bg-active:      #000000;
+  --color-bg-active-text: #ffffff;
+  --color-bg-input:       #ffffff;
+  --color-bg-backdrop:    rgba(100, 108, 255, 0.07);
+
+  /* --- Borders --- */
+  --color-border:         #e0e0e0;
+  --color-border-subtle:  rgba(0, 0, 0, 0.05);
+  --color-border-strong:  #cccccc;
+
+  /* --- Text --- */
+  --color-text-primary:      #333333;
+  --color-text-secondary:    #555555;
+  --color-text-muted:        #888888;
+  --color-text-placeholder:  #aaaaaa;
+  --color-text-on-accent:    #ffffff;
+
+  /* --- Accents (両テーマ共通) --- */
+  --color-accent-blue:   #007aff;
+  --color-accent-cyan:   #00b4d8;
+  --color-accent-purple: #646cff;
+
+  /* --- Status (両テーマ共通) --- */
+  --color-status-green:  #22c55e;
+  --color-status-red:    #ef4444;
+  --color-status-orange: #f59e0b;
+
+  /* --- UI パーツ --- */
+  --color-resize-handle:   #cccccc;
+  --color-slider-track:    rgba(0, 0, 0, 0.10);
+  --color-slider-thumb:    #000000;
+  --color-scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --color-bar-bg:          rgba(245, 245, 247, 0.95);
+  --color-bar-border:      rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="dark"] {
+  /* --- Backgrounds --- */
+  --color-bg-canvas:      #1a1a1a;
+  --color-bg-canvas-dot:  #3a3a3a;
+  --color-bg-primary:     #111111;
+  --color-bg-secondary:   #1e1e1e;
+  --color-bg-tertiary:    #252525;
+  --color-bg-overlay:     rgba(30, 30, 30, 0.96);
+  --color-bg-hover:       rgba(255, 255, 255, 0.07);
+  --color-bg-active:      #ffffff;
+  --color-bg-active-text: #000000;
+  --color-bg-input:       #111111;
+  --color-bg-backdrop:    rgba(100, 108, 255, 0.12);
+
+  /* --- Borders --- */
+  --color-border:         #333333;
+  --color-border-subtle:  rgba(255, 255, 255, 0.06);
+  --color-border-strong:  #444444;
+
+  /* --- Text --- */
+  --color-text-primary:      #f0f0f0;
+  --color-text-secondary:    #cccccc;
+  --color-text-muted:        #888888;
+  --color-text-placeholder:  #555555;
+  --color-text-on-accent:    #ffffff;
+
+  /* --- UI パーツ --- */
+  --color-resize-handle:   #444444;
+  --color-slider-track:    rgba(255, 255, 255, 0.12);
+  --color-slider-thumb:    #ffffff;
+  --color-scrollbar-thumb: rgba(255, 255, 255, 0.15);
+  --color-bar-bg:          rgba(28, 28, 30, 0.95);
+  --color-bar-border:      rgba(255, 255, 255, 0.06);
+}
+
+/* JS実行前のフラッシュ対策 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas:      #1a1a1a;
+    --color-bg-canvas-dot:  #3a3a3a;
+    --color-bg-primary:     #111111;
+    --color-bg-secondary:   #1e1e1e;
+    --color-bg-tertiary:    #252525;
+    --color-bg-overlay:     rgba(30, 30, 30, 0.96);
+    --color-bg-hover:       rgba(255, 255, 255, 0.07);
+    --color-bg-active:      #ffffff;
+    --color-bg-active-text: #000000;
+    --color-bg-input:       #111111;
+    --color-bg-backdrop:    rgba(100, 108, 255, 0.12);
+    --color-border:         #333333;
+    --color-border-subtle:  rgba(255, 255, 255, 0.06);
+    --color-border-strong:  #444444;
+    --color-text-primary:      #f0f0f0;
+    --color-text-secondary:    #cccccc;
+    --color-text-muted:        #888888;
+    --color-text-placeholder:  #555555;
+    --color-text-on-accent:    #ffffff;
+    --color-resize-handle:   #444444;
+    --color-slider-track:    rgba(255, 255, 255, 0.12);
+    --color-slider-thumb:    #ffffff;
+    --color-scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --color-bar-bg:          rgba(28, 28, 30, 0.95);
+    --color-bar-border:      rgba(255, 255, 255, 0.06);
+  }
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}

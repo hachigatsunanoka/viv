@@ -1,0 +1,90 @@
+.center-peak-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(8px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	animation: fadeIn 0.2s ease-out;
+}
+
+.center-peak-content {
+	background: var(--color-bg-primary);
+	width: 80%;
+	height: 80%;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+}
+
+.close-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: var(--color-text-primary);
+}
+
+.node-detail {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: var(--color-bg-secondary);
+	border-radius: 8px;
+	margin-bottom: 0;
+	overflow: hidden;
+}
+
+.node-detail img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.annotation-placeholder {
+	height: 50px;
+	border: 1px dashed var(--color-border-strong);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-text-muted);
+}
+
+/* Native browser fullscreen: style the element that enters fullscreen */
+.center-peak-content:fullscreen {
+	width: 100vw;
+	height: 100vh;
+	border-radius: 0;
+	box-shadow: none;
+	background: #000;
+}
+
+.center-peak-content:-webkit-full-screen {
+	width: 100vw;
+	height: 100vh;
+	border-radius: 0;
+	box-shadow: none;
+	background: #000;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}

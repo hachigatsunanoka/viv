@@ -1,0 +1,137 @@
+.context-menu {
+	position: fixed;
+	background: var(--color-bg-primary);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	padding: 4px;
+	min-width: unset;
+	z-index: 2000;
+	animation: fadeIn 0.1s ease-out;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.menu-toolbar-row {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 2px;
+}
+
+.menu-item {
+	padding: 6px 10px;
+	cursor: pointer;
+	font-size: 14px;
+	color: var(--color-text-primary);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.menu-item:hover {
+	background-color: var(--color-bg-hover);
+}
+
+.menu-item.active {
+	color: var(--color-accent-cyan);
+	font-weight: 500;
+}
+
+.icon-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	cursor: pointer;
+	color: var(--color-text-secondary);
+	transition: all 0.1s;
+}
+
+.icon-btn:hover {
+	background-color: var(--color-bg-hover);
+	color: var(--color-text-primary);
+}
+
+.icon-btn.active {
+	background-color: var(--color-bg-tertiary);
+	color: var(--color-text-primary);
+}
+
+.menu-separator-vertical {
+	width: 1px;
+	height: 20px;
+	background-color: var(--color-border);
+	margin: 0 4px;
+}
+
+.menu-separator {
+	height: 1px;
+	background-color: var(--color-border);
+	margin: 2px 0;
+}
+
+.color-swatch {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 1px solid var(--color-border-subtle);
+}
+
+/* Connection floating toolbar */
+.conn-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 4px 6px;
+	background: var(--color-bg-primary);
+	border: 1px solid var(--color-border);
+	border-radius: 8px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	white-space: nowrap;
+}
+
+.conn-tb-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	transition: background 0.1s, color 0.1s;
+	padding: 0;
+}
+
+.conn-tb-btn:hover {
+	background: var(--color-bg-hover);
+	color: var(--color-text-primary);
+}
+
+.conn-tb-btn.active {
+	background: var(--color-bg-tertiary);
+	color: var(--color-accent-purple);
+}
+
+.conn-tb-delete {
+	color: #ef4444;
+}
+
+.conn-tb-delete:hover {
+	background: rgba(239, 68, 68, 0.1);
+	color: #ef4444;
+}
+
+.conn-tb-sep {
+	width: 1px;
+	height: 18px;
+	background: var(--color-border);
+	margin: 0 2px;
+	flex-shrink: 0;
+}

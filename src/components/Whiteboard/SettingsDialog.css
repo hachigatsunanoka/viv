@@ -1,0 +1,333 @@
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(3px);
+}
+
+.settings-dialog {
+    background-color: var(--color-bg-secondary);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 40px;
+}
+
+/* ---- Tabs ---- */
+.settings-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 28px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg-secondary);
+}
+
+.settings-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 13px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-ui);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+}
+
+.settings-tab:hover {
+    color: var(--color-text-primary);
+}
+
+.settings-tab.active {
+    color: var(--color-text-primary);
+    border-bottom-color: var(--color-accent-blue);
+}
+
+/* ---- Content area ---- */
+.dialog-content {
+    padding: 28px 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+/* ---- Row layout ---- */
+.settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.settings-row-label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    width: 86px;
+    flex-shrink: 0;
+}
+
+.settings-row input[type="text"],
+.settings-row input[type="password"] {
+    flex: 1;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+}
+
+.settings-row input[type="text"]:focus,
+.settings-row input[type="password"]:focus {
+    border-color: var(--color-accent-blue);
+}
+
+/* ---- Select ---- */
+.settings-select {
+    flex: 1;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    appearance: auto;
+}
+
+.settings-select:focus {
+    border-color: var(--color-accent-blue);
+}
+
+
+/* ---- Theme buttons ---- */
+.theme-btn-group {
+    display: flex;
+    gap: 6px;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-input);
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.theme-toggle-btn.active {
+    background: var(--color-bg-active);
+    color: var(--color-bg-active-text);
+    border-color: var(--color-bg-active);
+}
+
+/* ---- Font preview ---- */
+.font-preview-area {
+    margin-top: 2px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.font-preview-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.font-preview-tag {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-placeholder);
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.font-preview-text {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+/* ---- Toggle switch ---- */
+.toggle-switch {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    border-radius: 9px;
+    border: none;
+    background: var(--color-border-strong);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    padding: 0;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.2s;
+}
+
+.toggle-switch.on {
+    background: var(--color-accent-blue);
+}
+
+.toggle-switch.on::after {
+    transform: translateX(14px);
+}
+
+/* ---- Plugin subsection ---- */
+.plugin-subsection-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--color-border-strong);
+}
+
+.plugin-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: var(--color-border-strong);
+}
+
+.plugin-status-dot.active {
+    background-color: var(--color-status-green);
+    box-shadow: 0 0 4px var(--color-status-green);
+}
+
+/* ---- Path input ---- */
+.path-input-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex: 1;
+}
+
+.path-input-row input {
+    flex: 1;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+}
+
+.path-input-row input:focus {
+    border-color: var(--color-accent-blue);
+}
+
+.browse-button {
+    background-color: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+}
+
+.browse-button:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+/* ---- Hint ---- */
+.hint {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    padding-left: 110px;
+}
+
+.hint a {
+    color: var(--color-accent-blue);
+    text-decoration: none;
+}
+
+/* ---- Header / Footer ---- */
+.settings-dialog .dialog-header {
+    border-bottom: none;
+}
+
+.settings-dialog .dialog-footer {
+    padding: 16px 32px;
+    border-top: none;
+}
+
+/* ---- Save button ---- */
+.save-button {
+    background-color: var(--color-accent-blue);
+    border: none;
+    color: var(--color-text-on-accent);
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+}
+
+.save-button:hover {
+    opacity: 0.85;
+}

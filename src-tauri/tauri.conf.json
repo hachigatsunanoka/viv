@@ -1,0 +1,46 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "viv",
+  "version": "0.1.0",
+  "identifier": "io.github.hachigatsunanoka.viv",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "viv",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' 'unsafe-inline' blob: asset: data: ipc:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: data: blob: https://*; media-src 'self' asset: blob: https://*;"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZDMjcxNTVEQTUwMkYyMTkKUldRWjhnS2xYUlVuL0NaeEJvM3FSWGRteHVFK0E5Ukw4VGs5T2xpR1VoQnd3OFJpdThab3lRcHoK",
+      "endpoints": [
+        "https://github.com/hachigatsunanoka/viv/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}

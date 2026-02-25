@@ -1,0 +1,149 @@
+.whiteboard-container {
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	position: relative;
+	background-color: var(--color-bg-canvas);
+	background-image: radial-gradient(var(--color-bg-canvas-dot) 1px, transparent 1px);
+	background-size: 20px 20px;
+	user-select: none;
+	-webkit-user-select: none;
+	/* Prevent text selection while dragging */
+}
+
+.whiteboard-container.dragging {
+	cursor: grabbing;
+}
+
+.whiteboard-content {
+	transform-origin: 0 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.whiteboard-controls {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	z-index: 1000;
+	display: flex;
+	gap: 10px;
+}
+
+.control-button {
+	background: var(--color-bg-primary);
+	border: 1px solid var(--color-border-strong);
+	padding: 8px 12px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	color: var(--color-text-primary);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: background 0.2s;
+}
+
+.control-button:hover {
+	background: var(--color-bg-secondary);
+	border-color: var(--color-border-strong);
+}
+
+.bottom-controls {
+	position: fixed;
+	bottom: 16px;
+	left: 16px;
+	z-index: 100;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.tool-switcher {
+	display: flex;
+	background: rgba(30, 30, 30, 0.7);
+	backdrop-filter: blur(8px);
+	padding: 4px;
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	gap: 4px;
+}
+
+.tool-button {
+	background: transparent;
+	border: none;
+	color: #aaa;
+	padding: 8px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tool-button:hover {
+	background: rgba(255, 255, 255, 0.05);
+	color: #fff;
+}
+
+.tool-button.active {
+	background: var(--color-accent, #00b4d8);
+	color: #fff;
+	box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.settings-button {
+	background: rgba(30, 30, 30, 0.7);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	color: #aaa;
+	padding: 8px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s;
+	backdrop-filter: blur(4px);
+}
+
+.settings-button:hover {
+	background: rgba(30, 30, 30, 0.9);
+	color: #fff;
+}
+
+.always-on-top-indicator {
+	background: rgba(0, 180, 216, 0.85);
+	border: 1px solid rgba(0, 180, 216, 0.4);
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	transition: all 0.2s;
+	backdrop-filter: blur(4px);
+	animation: fadeInIndicator 0.2s ease-out;
+}
+
+.always-on-top-indicator:hover {
+	background: rgba(0, 180, 216, 1);
+}
+
+@keyframes fadeInIndicator {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
