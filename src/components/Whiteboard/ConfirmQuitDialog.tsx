@@ -32,9 +32,9 @@ export const ConfirmQuitDialog: React.FC<ConfirmQuitDialogProps> = ({ onCancel }
 					<p>Do you want to save before closing?</p>
 				</div>
 				<div className="dialog-footer">
-					<button className="cancel-button" onClick={onCancel}>Cancel</button>
-					<button className="cancel-button" onClick={handleCloseWithoutSaving}>Close Without Saving</button>
 					<button className="save-button" onClick={handleSaveAndClose}>Save & Close</button>
+					<button className="cancel-button" onClick={handleCloseWithoutSaving}>Close Without Saving</button>
+					<button className="cancel-button" onClick={onCancel}>Cancel</button>
 				</div>
 			</div>
 		</div>

@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "viv",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "identifier": "io.github.hachigatsunanoka.viv",
   "build": {
     "frontendDist": "../dist",
@@ -26,6 +26,7 @@
   },
   "bundle": {
     "active": true,
+    "createUpdaterArtifacts": "v1Compatible",
     "targets": "all",
     "icon": [
       "icons/32x32.png",

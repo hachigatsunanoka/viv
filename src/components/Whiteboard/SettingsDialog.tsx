@@ -21,9 +21,9 @@ const VIDEO_SIZES = [
     { value: '2160', label: '4K (2160p)' },
     { value: '1440', label: '1440p' },
     { value: '1080', label: '1080p (Full HD)' },
-    { value: '720',  label: '720p (HD)' },
-    { value: '480',  label: '480p' },
-    { value: '360',  label: '360p' },
+    { value: '720', label: '720p (HD)' },
+    { value: '480', label: '480p' },
+    { value: '360', label: '360p' },
 ];
 
 type Tab = 'appearance' | 'plugin';
@@ -263,10 +263,10 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
                 </div>
 
                 <div className="dialog-footer">
-                    <button className="cancel-button" onClick={onClose}>Close</button>
                     <button className="save-button" onClick={handleSave}>
                         {saved ? <><Check size={16} /> Saved</> : 'Save'}
                     </button>
+                    <button className="cancel-button" onClick={onClose}>Close</button>
                 </div>
             </div>
         </div>

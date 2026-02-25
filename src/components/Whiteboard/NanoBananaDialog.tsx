@@ -145,7 +145,6 @@ export const NanoBananaDialog: React.FC<NanoBananaDialogProps> = ({ nodeId, onCl
 				</div>
 
 				<div className="dialog-footer">
-					<button className="cancel-button" onClick={onClose}>Cancel</button>
 					<button
 						className="generate-button"
 						onClick={handleGenerate}
@@ -160,6 +159,7 @@ export const NanoBananaDialog: React.FC<NanoBananaDialogProps> = ({ nodeId, onCl
 							'Generate'
 						)}
 					</button>
+					<button className="cancel-button" onClick={onClose}>Cancel</button>
 				</div>
 			</div>
 		</div>
