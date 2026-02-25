@@ -52,26 +52,43 @@ const BackdropContent: React.FC<{ node: NodeData }> = ({ node }) => {
 					borderBottom: `1px solid ${theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`,
 					backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
 				}}>
-					<input
-						type="text"
-						value={node.content}
-						onChange={handleTitleChange}
-						placeholder="Column Title"
-						style={{
-							width: '100%',
-							backgroundColor: 'transparent',
-							color: theme === 'dark' ? '#ffffff' : '#000000',
+					<div style={{ display: 'inline-grid', alignItems: 'center' }}>
+						<span style={{
+							visibility: 'hidden',
+							gridArea: '1 / 1',
+							whiteSpace: 'pre',
 							fontSize: '16px',
 							fontFamily: 'var(--font-ui)',
 							fontWeight: '600',
-							border: 'none',
-							outline: 'none',
-							pointerEvents: 'auto',
-						}}
-						onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
-						onMouseDown={(e) => e.stopPropagation()}
-						onDoubleClick={(e) => e.stopPropagation()}
-					/>
+						}}>
+							{node.content || 'Column Title'}
+						</span>
+						<input
+							type="text"
+							value={node.content}
+							onChange={handleTitleChange}
+							placeholder="Column Title"
+							style={{
+								gridArea: '1 / 1',
+								width: '100%',
+								backgroundColor: 'transparent',
+								color: theme === 'dark' ? '#ffffff' : '#000000',
+								fontSize: '16px',
+								fontFamily: 'var(--font-ui)',
+								fontWeight: '600',
+								border: 'none',
+								outline: 'none',
+								pointerEvents: 'auto',
+							}}
+							onKeyDown={(e) => {
+								e.stopPropagation();
+								e.nativeEvent.stopImmediatePropagation();
+								if (e.key === 'Enter') e.currentTarget.blur();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+							onDoubleClick={(e) => e.stopPropagation()}
+						/>
+					</div>
 				</div>
 			</div>
 		);
