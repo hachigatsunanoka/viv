@@ -95,9 +95,11 @@ export const useKeyboardShortcuts = ({
 			if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.code === 'KeyZ') {
 				const activeElement = document.activeElement;
 				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
-				e.preventDefault();
-				undo();
-				addNotification('Undo', 'info');
+				if (!activeNodeId) {
+					e.preventDefault();
+					undo();
+					addNotification('Undo', 'info');
+				}
 				return;
 			}
 
@@ -105,18 +107,23 @@ export const useKeyboardShortcuts = ({
 			if (((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyZ') || ((e.ctrlKey || e.metaKey) && e.code === 'KeyY')) {
 				const activeElement = document.activeElement;
 				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
-				e.preventDefault();
-				redo();
-				addNotification('Redo', 'info');
+				if (!activeNodeId) {
+					e.preventDefault();
+					redo();
+					addNotification('Redo', 'info');
+				}
 				return;
 			}
+
+			const activeElement = document.activeElement;
+			const isInputActive = activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA';
 
 			if (activeNodeId) return; // Don't trigger if editing a node
 
 			const isAlt = e.altKey;
 
 			// F: Focus
-			if (e.code === 'KeyF') {
+			if (e.code === 'KeyF' && !isInputActive) {
 				e.preventDefault();
 				if (containerRef.current) {
 					const { width, height } = containerRef.current.getBoundingClientRect();
@@ -125,9 +132,7 @@ export const useKeyboardShortcuts = ({
 			}
 
 			// Enter: Open Annotation View (if single node selected, but NOT for text/markdown)
-			if (e.code === 'Enter') {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if (e.code === 'Enter' && !isInputActive) {
 				const state = useStore.getState();
 				const currentSelected = state.selectedNodeIds;
 				if (currentSelected.length === 1) {
@@ -140,9 +145,7 @@ export const useKeyboardShortcuts = ({
 			}
 
 			// B: Create backdrop around selected nodes
-			if (e.key.toLowerCase() === 'b' && !isAlt) {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if (e.key.toLowerCase() === 'b' && !isAlt && !isInputActive) {
 				const state = useStore.getState();
 				const selectedNodes = state.nodes.filter(n => state.selectedNodeIds.includes(n.id));
 				if (selectedNodes.length > 0) {
@@ -168,40 +171,32 @@ export const useKeyboardShortcuts = ({
 			}
 
 			// Shortcuts for Alignment (Alt + Key)
-			if (isAlt && e.code === 'KeyH') { e.preventDefault(); alignNodes('horizontal'); }
-			if (isAlt && e.code === 'KeyV') { e.preventDefault(); alignNodes('vertical'); }
-			if (isAlt && e.code === 'KeyG') { e.preventDefault(); alignNodes('grid'); }
+			if (isAlt && e.code === 'KeyH' && !isInputActive) { e.preventDefault(); alignNodes('horizontal'); }
+			if (isAlt && e.code === 'KeyV' && !isInputActive) { e.preventDefault(); alignNodes('vertical'); }
+			if (isAlt && e.code === 'KeyG' && !isInputActive) { e.preventDefault(); alignNodes('grid'); }
 
 			// Global shortcuts
-			if (e.key === '?') {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if (e.key === '?' && !isInputActive) {
 				toggleShortcuts();
 			}
-			if (e.code === 'Space' && !e.repeat) {
+			if (e.code === 'Space' && !e.repeat && !isInputActive) {
 				isSpacePressed.current = true;
 				if (containerRef.current) containerRef.current.style.cursor = 'grab';
 			}
 
 			// V: Select Tool
-			if (e.code === 'KeyV' && !e.ctrlKey && !e.metaKey && !isAlt) {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if (e.code === 'KeyV' && !e.ctrlKey && !e.metaKey && !isAlt && !isInputActive) {
 				setActiveTool('select');
 				addNotification('Select tool', 'info');
 			}
 
 			// P: Pen Tool
-			if (e.code === 'KeyP' && !e.ctrlKey && !e.metaKey && !isAlt) {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if (e.code === 'KeyP' && !e.ctrlKey && !e.metaKey && !isAlt && !isInputActive) {
 				setActiveTool('draw');
 				addNotification('Pen tool', 'info');
 			}
 
-			if ((e.key === 'Delete' || e.key === 'Backspace')) {
-				const activeElement = document.activeElement;
-				if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') return;
+			if ((e.key === 'Delete' || e.key === 'Backspace') && !isInputActive) {
 				removeSelectedNodes();
 			}
 		};

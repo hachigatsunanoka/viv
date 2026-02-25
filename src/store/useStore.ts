@@ -95,6 +95,11 @@ export interface AppState {
 	setDotGridPitch: (v: number) => void;
 	activeTool: 'select' | 'draw';
 	setActiveTool: (tool: 'select' | 'draw') => void;
+	penColor: string;
+	setPenColor: (color: string) => void;
+	penThickness: number;
+	setPenThickness: (thickness: number) => void;
+	clearDrawings: () => void;
 	undoStack: HistoryState[];
 	redoStack: HistoryState[];
 	pushHistory: () => void;
@@ -154,6 +159,19 @@ export const useStore = create<AppState>()((set) => ({
 	},
 	activeTool: 'select',
 	setActiveTool: (tool) => set({ activeTool: tool }),
+	penColor: 'var(--color-text-primary)',
+	setPenColor: (color) => set({ penColor: color }),
+	penThickness: 2,
+	setPenThickness: (thickness) => set({ penThickness: thickness }),
+	clearDrawings: () => set((state) => ({
+		undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
+		redoStack: [],
+		nodes: state.nodes.filter(n => n.type !== 'draw'),
+		selectedNodeIds: state.selectedNodeIds.filter(id => {
+			const node = state.nodes.find(n => n.id === id);
+			return node?.type !== 'draw';
+		})
+	})),
 	undoStack: [],
 	redoStack: [],
 	activeDropTargetId: null,

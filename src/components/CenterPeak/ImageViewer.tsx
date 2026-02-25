@@ -50,8 +50,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 		img.src = src;
 	}, [src]);
 
-	const { undo, redo } = useAnnotationHistory(nodeId);
-	const { handleUpdateAnnotation, handleClearAnnotation, handleClearAllAnnotations, handleAddComment } = useAnnotationActions(nodeId, { fixedFrame: 0 });
+	const { undo, redo, pushState } = useAnnotationHistory(nodeId);
+	const { handleUpdateAnnotation, handleClearAnnotation, handleClearAllAnnotations, handleAddComment } = useAnnotationActions(nodeId, pushState, { fixedFrame: 0 });
 
 	const [bgMode, setBgMode] = useState<'black' | 'checker'>('black');
 	const [showShortcuts, setShowShortcuts] = useState(false);
@@ -66,6 +66,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 
 			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
 				e.preventDefault();
+				e.stopPropagation();
 				if (e.shiftKey) {
 					redo();
 				} else {
@@ -74,39 +75,54 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 				return;
 			} else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
 				e.preventDefault();
+				e.stopPropagation();
 				redo();
 				return;
 			}
 			if (e.ctrlKey || e.metaKey) return;
 			switch (e.key.toLowerCase()) {
 				case 'h':
+					e.stopPropagation();
 					nav.handleResetView();
 					break;
 				case 'b':
+					e.stopPropagation();
 					drawingState.setActiveTool('brush');
 					break;
 				case 'g':
+					e.stopPropagation();
 					drawingState.setActiveTool('grunge');
 					break;
 				case 'e':
+					e.stopPropagation();
 					drawingState.setActiveTool('eraser');
 					break;
 				case 'f':
+					e.stopPropagation();
 					onToggleFullscreen?.();
 					break;
 				case 'm':
+					e.stopPropagation();
 					nav.setIsFlipped(!isFlipped);
 					break;
 				case 'v':
+					e.stopPropagation();
 					drawingState.setShowAnnotations(!drawingState.showAnnotations);
 					break;
 				case '?':
+					e.stopPropagation();
 					setShowShortcuts(v => !v);
 					break;
 			}
 		};
-		window.addEventListener('keydown', handleKeyDown);
-		return () => window.removeEventListener('keydown', handleKeyDown);
+		const container = imageAreaRef.current?.parentElement;
+		if (container) {
+			container.addEventListener('keydown', handleKeyDown);
+			container.focus(); // Ensure it can receive key events if it has tabIndex
+		}
+		return () => {
+			if (container) container.removeEventListener('keydown', handleKeyDown);
+		};
 	}, [nav, undo, redo, drawingState, isFlipped, onToggleFullscreen]);
 
 	const handleExportPDF = async () => {
@@ -231,7 +247,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 
 
 	return (
-		<div className="video-player-container" style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
+		<div className="video-player-container" tabIndex={0} style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
 			{/* Left Side: Image Area */}
 			<div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0 }}>
 				<div
@@ -315,12 +331,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 					onExport={handleExport}
 					onExportPDF={handleExportPDF}
 					colorCorrection={{ saturation, setSaturation, contrast, setContrast, brightness, setBrightness }}
-					commentsProps={{ comments: node?.comments || [], currentFrame: 0, onAddComment: handleAddComment, onSeek: () => {}, isImage: true }}
+					commentsProps={{ comments: node?.comments || [], currentFrame: 0, onAddComment: handleAddComment, onSeek: () => { }, isImage: true }}
 					bgMode={bgMode}
 					onBgToggle={() => setBgMode(m => m === 'black' ? 'checker' : 'black')}
-			isFullscreen={isFullscreen}
-			onToggleFullscreen={onToggleFullscreen}
-				onShowShortcuts={() => setShowShortcuts(v => !v)}
+					isFullscreen={isFullscreen}
+					onToggleFullscreen={onToggleFullscreen}
+					onShowShortcuts={() => setShowShortcuts(v => !v)}
 				/>
 				{showShortcuts && <AnnotationShortcutView onClose={() => setShowShortcuts(false)} isImage={true} />}
 			</div>

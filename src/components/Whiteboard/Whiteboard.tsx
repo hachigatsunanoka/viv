@@ -18,7 +18,7 @@ import { NanoBananaDialog } from './NanoBananaDialog';
 import { SettingsDialog } from './SettingsDialog';
 import { ConfirmQuitDialog } from './ConfirmQuitDialog';
 import { findClosestNode } from './utils/connection';
-import { Settings, MousePointer2, Pencil } from 'lucide-react';
+import { Settings, MousePointer2, Pencil, Eraser } from 'lucide-react';
 import { useNotification } from '../Notification/NotificationContext';
 import './Whiteboard.css';
 
@@ -47,7 +47,8 @@ export const Whiteboard: React.FC = () => {
 		activeNodeId, clearSelection, setActiveNodeId, setSelectedNodes,
 		updateConnection, connections,
 		dotGridEnabled, dotGridPitch,
-		activeTool, setActiveTool, pushHistory
+		activeTool, setActiveTool, pushHistory,
+		penColor, setPenColor, penThickness, setPenThickness, clearDrawings
 	} = useStore(
 		useShallow((s) => ({
 			nodes: s.nodes,
@@ -67,6 +68,11 @@ export const Whiteboard: React.FC = () => {
 			activeTool: s.activeTool,
 			setActiveTool: s.setActiveTool,
 			pushHistory: s.pushHistory,
+			penColor: s.penColor,
+			setPenColor: s.setPenColor,
+			penThickness: s.penThickness,
+			setPenThickness: s.setPenThickness,
+			clearDrawings: s.clearDrawings,
 		}))
 	);
 	const [isPanning, setIsPanning] = useState(false);
@@ -367,7 +373,8 @@ export const Whiteboard: React.FC = () => {
 					height,
 					content: '',
 					points: normalizedPoints,
-					strokeWidth: 2,
+					strokeWidth: penThickness,
+					fontColor: penColor,
 				});
 			}
 			setCurrentStroke([]);
@@ -603,8 +610,8 @@ export const Whiteboard: React.FC = () => {
 						<polyline
 							points={currentStroke.map(p => `${p.x},${p.y}`).join(' ')}
 							fill="none"
-							stroke="var(--color-text-primary)"
-							strokeWidth={2 / view.zoom}
+							stroke={penColor}
+							strokeWidth={penThickness / view.zoom}
 							strokeLinecap="round"
 							strokeLinejoin="round"
 						/>
@@ -649,6 +656,39 @@ export const Whiteboard: React.FC = () => {
 				<ConfirmQuitDialog onCancel={() => setShowConfirmQuit(false)} />
 			)}
 			<div className="bottom-controls">
+				{activeTool === 'draw' && (
+					<div className="draw-tools">
+						<div className="thickness-picker">
+							{[2, 4, 8].map(t => (
+								<button
+									key={t}
+									className={`draw-tool-btn ${penThickness === t ? 'active' : ''}`}
+									onClick={() => setPenThickness(t)}
+									title={`Thickness: ${t}px`}
+								>
+									<div className="thickness-dot" style={{ width: t * 1.5, height: t * 1.5, minWidth: 4, minHeight: 4, borderRadius: '50%', backgroundColor: penThickness === t ? '#fff' : '#aaa' }} />
+								</button>
+							))}
+						</div>
+						<div className="divider" />
+						<div className="color-picker">
+							{['var(--color-text-primary)', '#ff4444', '#ffb703', '#44ff44', '#00b4d8'].map(c => (
+								<button
+									key={c}
+									className={`draw-tool-btn ${penColor === c ? 'active' : ''}`}
+									onClick={() => setPenColor(c)}
+									title="Color"
+								>
+									<div className="color-dot" style={{ backgroundColor: c === 'var(--color-text-primary)' ? 'currenColor' : c, ...(c === 'var(--color-text-primary)' ? { background: 'var(--color-text-primary)' } : {}) }} />
+								</button>
+							))}
+						</div>
+						<div className="divider" />
+						<button className="draw-tool-btn clear-btn" onClick={clearDrawings} title="Clear All Drawings">
+							<Eraser size={16} />
+						</button>
+					</div>
+				)}
 				<div className="tool-switcher">
 					<button
 						className={`tool-button ${activeTool === 'select' ? 'active' : ''}`}

@@ -1,16 +1,14 @@
 import { useCallback } from 'react';
 import { useStore, type Comment } from '../store/useStore';
-import { useAnnotationHistory } from './useAnnotationHistory';
 
 interface UseAnnotationActionsOptions {
 	/** When set, all frame arguments are ignored and this frame is used instead (e.g. images always use 0). */
 	fixedFrame?: number;
 }
 
-export function useAnnotationActions(nodeId: string, options: UseAnnotationActionsOptions = {}) {
+export function useAnnotationActions(nodeId: string, pushState: (s: Record<number, string>) => void, options: UseAnnotationActionsOptions = {}) {
 	const { fixedFrame } = options;
 	const updateNode = useStore((state) => state.updateNode);
-	const { pushState } = useAnnotationHistory(nodeId);
 
 	const handleUpdateAnnotation = useCallback((frame: number, dataUrl: string) => {
 		const node = useStore.getState().nodes.find(n => n.id === nodeId);

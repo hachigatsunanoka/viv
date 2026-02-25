@@ -70,6 +70,69 @@
 	gap: 4px;
 }
 
+.draw-tools {
+	display: flex;
+	background: rgba(30, 30, 30, 0.7);
+	backdrop-filter: blur(8px);
+	padding: 4px;
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	gap: 4px;
+	align-items: center;
+}
+
+.thickness-picker, .color-picker {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}
+
+.draw-tool-btn {
+	background: transparent;
+	border: 1px solid transparent;
+	padding: 4px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	width: 28px;
+	height: 28px;
+}
+
+.draw-tool-btn:hover {
+	background: rgba(255, 255, 255, 0.05);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+.draw-tool-btn.active {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.draw-tool-btn.clear-btn {
+	color: #ff4444;
+}
+.draw-tool-btn.clear-btn:hover {
+	background: rgba(255, 68, 68, 0.1);
+	color: #ff6666;
+}
+
+.color-dot {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.draw-tools .divider {
+	width: 1px;
+	height: 16px;
+	background: rgba(255, 255, 255, 0.2);
+	margin: 0 4px;
+}
+
 .tool-button {
 	background: transparent;
 	border: none;

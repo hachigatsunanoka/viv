@@ -222,8 +222,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 		}
 	}, [fps, duration]);
 
-	const { undo, redo } = useAnnotationHistory(nodeId);
-	const { handleUpdateAnnotation, handleClearAnnotation, handleClearAllAnnotations, handleAddComment } = useAnnotationActions(nodeId);
+	const { undo, redo, pushState } = useAnnotationHistory(nodeId);
+	const { handleUpdateAnnotation, handleClearAnnotation, handleClearAllAnnotations, handleAddComment } = useAnnotationActions(nodeId, pushState);
 
 	// Keyboard shortcuts
 	useEffect(() => {
@@ -236,6 +236,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 			// Undo/Redo handling
 			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
 				e.preventDefault();
+				e.stopPropagation();
 				if (e.shiftKey) {
 					redo();
 				} else {
@@ -244,6 +245,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 				return;
 			} else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
 				e.preventDefault();
+				e.stopPropagation();
 				redo();
 				return;
 			}
@@ -254,10 +256,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 				case ' ':
 				case 'k':
 					e.preventDefault();
+					e.stopPropagation();
 					togglePlay();
 					break;
 				case 'arrowleft':
 					e.preventDefault();
+					e.stopPropagation();
 					if (e.shiftKey) {
 						if (!node?.annotations) return;
 						const videoTime = videoRef.current.currentTime;
@@ -271,6 +275,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 					break;
 				case 'arrowright':
 					e.preventDefault();
+					e.stopPropagation();
 					if (e.shiftKey) {
 						if (!node?.annotations) return;
 						const videoTime = videoRef.current.currentTime;
@@ -283,47 +288,64 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 					}
 					break;
 				case 'i':
+					e.stopPropagation();
 					setInPoint(videoRef.current.currentTime);
 					setIsLooping(true);
 					break;
 				case 'o':
+					e.stopPropagation();
 					setOutPoint(videoRef.current.currentTime);
 					setIsLooping(true);
 					break;
 				case 'r':
+					e.stopPropagation();
 					setInPoint(null);
 					setOutPoint(null);
 					break;
 				case 'b':
+					e.stopPropagation();
 					setActiveTool('brush');
 					break;
 				case 'g':
+					e.stopPropagation();
 					setActiveTool('grunge');
 					break;
 				case 'e':
+					e.stopPropagation();
 					setActiveTool('eraser');
 					break;
 				case 'h':
+					e.stopPropagation();
 					nav.handleResetView();
 					break;
 				case 'f':
+					e.stopPropagation();
 					onToggleFullscreen?.();
 					break;
 				case 'm':
+					e.stopPropagation();
 					nav.setIsFlipped(!isFlipped);
 					break;
 				case 'v':
+					e.stopPropagation();
 					setShowAnnotations(!showAnnotations);
 					break;
 				case '?':
+					e.stopPropagation();
 					setShowShortcuts(v => !v);
 					break;
 			}
 		};
 
-		window.addEventListener('keydown', handleKeyDown);
+		const container = containerRef.current;
+		if (container) {
+			container.addEventListener('keydown', handleKeyDown);
+			container.focus(); // Ensure it can receive key events if it has tabIndex
+		}
 		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
+			if (container) {
+				container.removeEventListener('keydown', handleKeyDown);
+			}
 		};
 	}, [isPlaying, activeTool, fps, inPoint, outPoint, setActiveTool, stepFrame, node?.annotations, handleSeekToFrame, nav, undo, redo, setInPoint, setOutPoint, isFlipped, showAnnotations, setShowAnnotations, onToggleFullscreen, togglePlay]);
 
@@ -505,7 +527,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 	};
 
 	return (
-		<div className="video-player-container" ref={containerRef} style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
+		<div className="video-player-container" ref={containerRef} tabIndex={0} style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
 			{/* Left Side: Player */}
 			<div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0 }}>
 				<div
