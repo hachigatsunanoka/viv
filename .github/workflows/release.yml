@@ -23,7 +23,7 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04'
         # You can remove libappindicator3-dev if you do not use the system tray feature.
         run: |
-          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev flatpak flatpak-builder
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
