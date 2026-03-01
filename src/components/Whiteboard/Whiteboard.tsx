@@ -46,7 +46,7 @@ export const Whiteboard: React.FC = () => {
 		nodes, view, panView, zoomView, addNode, addConnection,
 		activeNodeId, clearSelection, setActiveNodeId, setSelectedNodes,
 		updateConnection, connections,
-		dotGridEnabled, dotGridPitch,
+		dotGridEnabled, dotGridPitch, canvasOpacity,
 		activeTool, setActiveTool, pushHistory,
 		penColor, setPenColor, penThickness, setPenThickness, clearDrawings
 	} = useStore(
@@ -65,6 +65,7 @@ export const Whiteboard: React.FC = () => {
 			connections: s.connections,
 			dotGridEnabled: s.dotGridEnabled,
 			dotGridPitch: s.dotGridPitch,
+			canvasOpacity: s.canvasOpacity,
 			activeTool: s.activeTool,
 			setActiveTool: s.setActiveTool,
 			pushHistory: s.pushHistory,
@@ -525,7 +526,7 @@ export const Whiteboard: React.FC = () => {
 		<div
 			ref={containerRef}
 			className={`whiteboard-container ${isPanning ? 'dragging' : ''}`}
-			style={{ cursor: isPanning ? 'grabbing' : 'default', backgroundSize: `${dotGridPitch * view.zoom}px ${dotGridPitch * view.zoom}px`, backgroundPosition: `${view.x}px ${view.y}px`, backgroundImage: dotGridEnabled ? undefined : 'none' }}
+			style={{ cursor: isPanning ? 'grabbing' : 'default', '--dot-grid-size': `${dotGridPitch * view.zoom}px ${dotGridPitch * view.zoom}px`, '--dot-bg-pos': `${view.x}px ${view.y}px`, '--canvas-opacity': canvasOpacity / 100, '--dot-bg-image': dotGridEnabled ? 'radial-gradient(var(--color-bg-canvas-dot) 1px, transparent 1px)' : 'none' } as React.CSSProperties}
 			onWheel={handleWheel}
 			onMouseDown={handleMouseDown}
 			onMouseMove={handleMouseMove}

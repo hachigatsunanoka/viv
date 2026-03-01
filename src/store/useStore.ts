@@ -93,6 +93,8 @@ export interface AppState {
 	dotGridPitch: number;
 	setDotGridEnabled: (v: boolean) => void;
 	setDotGridPitch: (v: number) => void;
+	canvasOpacity: number;
+	setCanvasOpacity: (v: number) => void;
 	activeTool: 'select' | 'draw';
 	setActiveTool: (tool: 'select' | 'draw') => void;
 	penColor: string;
@@ -150,6 +152,11 @@ export const useStore = create<AppState>()((set) => ({
 	setDotGridPitch: (v) => {
 		localStorage.setItem('dotGridPitch', String(v));
 		set({ dotGridPitch: v });
+	},
+	canvasOpacity: Number(localStorage.getItem('canvasOpacity') ?? 50),
+	setCanvasOpacity: (v) => {
+		localStorage.setItem('canvasOpacity', String(v));
+		set({ canvasOpacity: v });
 	},
 	setFontMono: (id) => {
 		const opt = MONO_FONTS.find(f => f.id === id) ?? MONO_FONTS[0];
