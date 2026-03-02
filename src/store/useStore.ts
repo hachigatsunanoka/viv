@@ -1,7 +1,17 @@
 import { create } from 'zustand';
 import { alignNodes as calculateAlignment } from '../components/Whiteboard/utils/alignment';
 import { SANS_FONTS, MONO_FONTS } from '../lib/fontOptions';
-import { ZOOM_SENSITIVITY, ZOOM_MIN, ZOOM_MAX, FOCUS_PADDING, FOCUS_ZOOM_MAX } from '../constants';
+import {
+	ZOOM_SENSITIVITY, ZOOM_MIN, ZOOM_MAX, FOCUS_PADDING, FOCUS_ZOOM_MAX,
+	HISTORY_LIMIT,
+	COLUMN_PADDING_X, COLUMN_PADDING_Y, COLUMN_HEADER_HEIGHT, COLUMN_GAP, COLUMN_MIN_HEIGHT,
+} from '../constants';
+
+// Helper: push current nodes+connections onto undoStack (caps at HISTORY_LIMIT, clears redoStack)
+const withUndo = (state: { undoStack: HistoryState[]; nodes: NodeData[]; connections: ConnectionData[] }) => ({
+	undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-HISTORY_LIMIT),
+	redoStack: [] as HistoryState[],
+});
 
 export type NodeType = 'image' | 'video' | 'text' | 'markdown' | 'backdrop' | 'draw';
 
@@ -170,15 +180,14 @@ export const useStore = create<AppState>()((set) => ({
 	setPenColor: (color) => set({ penColor: color }),
 	penThickness: 2,
 	setPenThickness: (thickness) => set({ penThickness: thickness }),
-	clearDrawings: () => set((state) => ({
-		undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-		redoStack: [],
-		nodes: state.nodes.filter(n => n.type !== 'draw'),
-		selectedNodeIds: state.selectedNodeIds.filter(id => {
-			const node = state.nodes.find(n => n.id === id);
-			return node?.type !== 'draw';
-		})
-	})),
+	clearDrawings: () => set((state) => {
+		const drawIds = new Set(state.nodes.filter(n => n.type === 'draw').map(n => n.id));
+		return {
+			...withUndo(state),
+			nodes: state.nodes.filter(n => n.type !== 'draw'),
+			selectedNodeIds: state.selectedNodeIds.filter(id => !drawIds.has(id)),
+		};
+	}),
 	undoStack: [],
 	redoStack: [],
 	activeDropTargetId: null,
@@ -187,43 +196,37 @@ export const useStore = create<AppState>()((set) => ({
 	pushHistory: () => set((state) => {
 		const last = state.undoStack[state.undoStack.length - 1];
 		if (last && last.nodes === state.nodes && last.connections === state.connections) return {};
-		return {
-			undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50), // Limit history to 50 steps
-			redoStack: []
-		};
+		return withUndo(state);
 	}),
 	undo: () => set((state) => {
 		if (state.undoStack.length === 0) return {};
 		const prev = state.undoStack[state.undoStack.length - 1];
-		const nextUndoStack = state.undoStack.slice(0, -1);
 		return {
 			nodes: prev.nodes,
 			connections: prev.connections,
-			undoStack: nextUndoStack,
-			redoStack: [{ nodes: state.nodes, connections: state.connections }, ...state.redoStack].slice(0, 50),
+			undoStack: state.undoStack.slice(0, -1),
+			redoStack: [{ nodes: state.nodes, connections: state.connections }, ...state.redoStack].slice(0, HISTORY_LIMIT),
 			activeNodeId: null,
-			selectedNodeIds: []
+			selectedNodeIds: [],
 		};
 	}),
 	redo: () => set((state) => {
 		if (state.redoStack.length === 0) return {};
 		const next = state.redoStack[0];
-		const nextRedoStack = state.redoStack.slice(1);
 		return {
 			nodes: next.nodes,
 			connections: next.connections,
-			undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-			redoStack: nextRedoStack,
+			undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-HISTORY_LIMIT),
+			redoStack: state.redoStack.slice(1),
 			activeNodeId: null,
-			selectedNodeIds: []
+			selectedNodeIds: [],
 		};
 	}),
 	setNodes: (nodes) => set({ nodes }),
 
 	addNode: (node) => set((state) => ({
-		undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-		redoStack: [],
-		nodes: [...state.nodes, node]
+		...withUndo(state),
+		nodes: [...state.nodes, node],
 	})),
 	updateNode: (id, data) =>
 		set((state) => {
@@ -298,8 +301,7 @@ export const useStore = create<AppState>()((set) => ({
 			}
 
 			return {
-				undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-				redoStack: [],
+				...withUndo(state),
 				nodes: nextNodes,
 				connections: state.connections.filter(
 					(c) => c.fromNodeId !== id && c.toNodeId !== id
@@ -308,14 +310,12 @@ export const useStore = create<AppState>()((set) => ({
 			};
 		}),
 	addConnection: (connection) => set((state) => ({
-		undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-		redoStack: [],
-		connections: [...state.connections, connection]
+		...withUndo(state),
+		connections: [...state.connections, connection],
 	})),
 	removeConnection: (id) => set((state) => ({
-		undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-		redoStack: [],
-		connections: state.connections.filter((c) => c.id !== id)
+		...withUndo(state),
+		connections: state.connections.filter((c) => c.id !== id),
 	})),
 	setView: (view) => set({ view }),
 	setActiveNodeId: (id) => set({ activeNodeId: id }),
@@ -433,8 +433,7 @@ export const useStore = create<AppState>()((set) => ({
 			}
 
 			return {
-				undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-				redoStack: [],
+				...withUndo(state),
 				nodes: state.nodes.filter((node) => !idsToRemove.has(node.id)),
 				connections: state.connections.filter(
 					(c) => !idsToRemove.has(c.fromNodeId) && !idsToRemove.has(c.toNodeId)
@@ -565,14 +564,14 @@ export const useStore = create<AppState>()((set) => ({
 		const column = nodes.find((n: NodeData) => n.id === columnId);
 		if (!column || column.type !== 'backdrop' || column.layoutMode !== 'column') return nodes;
 
-		const PADDING_X = 20;
-		const PADDING_Y = 20;
-		const HEADER_HEIGHT = 60; // Space for column title
-		const GAP = 20; // vertical gap between children
+		const PADDING_X = COLUMN_PADDING_X;
+		const PADDING_Y = COLUMN_PADDING_Y;
+		const HEADER_HEIGHT = COLUMN_HEADER_HEIGHT;
+		const GAP = COLUMN_GAP;
 
 		const children = nodes.filter((n: NodeData) => n.parentId === columnId);
 		if (children.length === 0) {
-			const minHeight = Math.max(200, HEADER_HEIGHT + PADDING_Y); // Minimum height logic
+			const minHeight = Math.max(COLUMN_MIN_HEIGHT, HEADER_HEIGHT + PADDING_Y); // Minimum height logic
 			if (column.height !== minHeight) {
 				return nodes.map((n: NodeData) => n.id === columnId ? { ...n, height: minHeight } : n);
 			}
@@ -641,8 +640,7 @@ export const useStore = create<AppState>()((set) => ({
 			const updateMap = new Map(updates.map(u => [u.id, u.data]));
 
 			return {
-				undoStack: [...state.undoStack, { nodes: state.nodes, connections: state.connections }].slice(-50),
-				redoStack: [],
+				...withUndo(state),
 				nodes: nodes.map(n => {
 					if (updateMap.has(n.id)) {
 						return { ...n, ...updateMap.get(n.id) };

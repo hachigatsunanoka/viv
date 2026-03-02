@@ -22,6 +22,7 @@ interface ImageViewerProps {
 }
 
 export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscreen = false, onToggleFullscreen }) => {
+	const containerRef = useRef<HTMLDivElement>(null);
 	const imageAreaRef = useRef<HTMLDivElement>(null);
 
 	const node = useStore((state) => state.nodes.find(n => n.id === nodeId));
@@ -115,10 +116,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 					break;
 			}
 		};
-		const container = imageAreaRef.current?.parentElement;
+		const container = containerRef.current;
 		if (container) {
 			container.addEventListener('keydown', handleKeyDown);
-			container.focus(); // Ensure it can receive key events if it has tabIndex
+			container.focus();
 		}
 		return () => {
 			if (container) container.removeEventListener('keydown', handleKeyDown);
@@ -247,7 +248,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ src, nodeId, isFullscr
 
 
 	return (
-		<div className="video-player-container" tabIndex={0} style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
+		<div className="video-player-container" ref={containerRef} tabIndex={0} style={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'hidden' }}>
 			{/* Left Side: Image Area */}
 			<div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0 }}>
 				<div
