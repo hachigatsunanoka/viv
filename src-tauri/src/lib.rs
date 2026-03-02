@@ -32,6 +32,14 @@ pub fn run() {
                 )?;
             }
 
+            // Set webview background to transparent to avoid white flash on show
+            {
+                use tauri::Manager;
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.set_background_color(Some(tauri::window::Color(0, 0, 0, 0)));
+                }
+            }
+
             // --- System Tray ---
             #[cfg(desktop)]
             {
