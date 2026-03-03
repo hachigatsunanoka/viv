@@ -34,7 +34,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
     const [videoSize, setVideoSize] = useState('1080');
     const [nanoBananaApiKey, setNanoBananaApiKey] = useState('');
     const [saved, setSaved] = useState(false);
-    const { fontSans, fontMono, setFontSans, setFontMono, theme, toggleTheme, dotGridEnabled, dotGridPitch, setDotGridEnabled, setDotGridPitch } = useStore();
+    const { fontSans, fontMono, setFontSans, setFontMono, theme, toggleTheme, dotGridEnabled, dotGridPitch, setDotGridEnabled, setDotGridPitch, canvasOpacity, setCanvasOpacity } = useStore();
 
     useEffect(() => {
         invoke<string>('get_config').then((configStr) => {
@@ -152,6 +152,20 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
                                         width="100%"
                                     />
                                 )}
+                            </div>
+
+                            <div className="settings-row">
+                                <span className="settings-row-label">BG Opacity</span>
+                                <LabelSlider
+                                    label="Opacity"
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                    value={canvasOpacity}
+                                    onChange={setCanvasOpacity}
+                                    formatValue={(v) => `${v}%`}
+                                    width="100%"
+                                />
                             </div>
 
                             <div className="plugin-subsection-label" style={{ marginTop: 8 }}>

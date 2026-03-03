@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import type { DrawingState } from '../../hooks/useDrawing';
 import { GRUNGE_TEXTURE_SIZE, GRUNGE_SCRATCH_COUNT } from '../../constants';
 
@@ -371,7 +371,7 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
 		};
 	};
 
-	const normalizedBrushSize = activeSize * (Math.min(width, height) / 1080);
+	const normalizedBrushSize = useMemo(() => activeSize * (Math.min(width, height) / 1080), [activeSize, width, height]);
 
 	const stampGrunge = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
 		if (!grungeImageRef.current || !grungeImageRef.current.complete) return;

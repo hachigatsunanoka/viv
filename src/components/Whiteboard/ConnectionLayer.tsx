@@ -1,5 +1,6 @@
 import React from 'react';
 import { useStore } from '../../store/useStore';
+import { useShallow } from 'zustand/shallow';
 import type { ConnectionData } from '../../store/useStore';
 import { Trash2, Minus } from 'lucide-react';
 import './ContextMenu.css';
@@ -25,8 +26,7 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({
 	onDeleteConnection,
 	zoom,
 }) => {
-	const nodes = useStore((state) => state.nodes);
-	const connections = useStore((state) => state.connections);
+	const { nodes, connections } = useStore(useShallow((state) => ({ nodes: state.nodes, connections: state.connections })));
 
 	const nodeMap = React.useMemo(() => new Map(nodes.map(n => [n.id, n])), [nodes]);
 	const connectionMap = React.useMemo(() => new Map(connections.map(c => [c.id, c])), [connections]);
@@ -110,6 +110,10 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({
 								onClick={(e) => {
 									e.stopPropagation();
 									onSelectConnection(conn.id, e.shiftKey || e.ctrlKey || e.metaKey);
+								}}
+								onContextMenu={(e) => {
+									e.stopPropagation();
+									onContextMenu(e, conn.id);
 								}}
 							/>
 							{/* Selection glow */}

@@ -164,11 +164,9 @@ export const Node: React.FC<NodeProps> = React.memo(({ node, onStartConnection, 
 			// Trigger attach to column if dropped
 			const store = useStore.getState();
 			store.setDropTarget(null);
-			if (store.attachToColumn) {
-				const selectedIds = store.selectedNodeIds;
-				const idsToMove = selectedIds.includes(node.id) ? selectedIds : [node.id];
-				store.attachToColumn(idsToMove);
-			}
+			const selectedIds = store.selectedNodeIds;
+			const idsToMove = selectedIds.includes(node.id) ? selectedIds : [node.id];
+			store.attachToColumn(idsToMove);
 		};
 
 		window.addEventListener('mousemove', handleWindowMouseMove);

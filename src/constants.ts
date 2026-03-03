@@ -31,3 +31,13 @@ export const NORMALIZE_TARGET_SIZE = 500;
 // Video
 export const DEFAULT_FPS = 24;
 export const EPSILON = 0.00001;
+
+// History
+export const HISTORY_LIMIT = 50;
+
+// Column layout
+export const COLUMN_PADDING_X = 20;
+export const COLUMN_PADDING_Y = 20;
+export const COLUMN_HEADER_HEIGHT = 60;
+export const COLUMN_GAP = 20;
+export const COLUMN_MIN_HEIGHT = 200;

@@ -3,12 +3,31 @@
 	height: 100vh;
 	overflow: hidden;
 	position: relative;
-	background-color: var(--color-bg-canvas);
-	background-image: radial-gradient(var(--color-bg-canvas-dot) 1px, transparent 1px);
-	background-size: 20px 20px;
+	background-color: transparent;
 	user-select: none;
 	-webkit-user-select: none;
 	/* Prevent text selection while dragging */
+}
+
+.whiteboard-container::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: var(--color-bg-canvas);
+	opacity: var(--canvas-opacity, 0.5);
+	pointer-events: none;
+	z-index: 0;
+}
+
+.whiteboard-container::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image: var(--dot-bg-image);
+	background-size: var(--dot-grid-size, 20px 20px);
+	background-position: var(--dot-bg-pos, 0 0);
+	pointer-events: none;
+	z-index: 0;
 }
 
 .whiteboard-container.dragging {
@@ -81,7 +100,8 @@
 	align-items: center;
 }
 
-.thickness-picker, .color-picker {
+.thickness-picker,
+.color-picker {
 	display: flex;
 	gap: 4px;
 	align-items: center;
@@ -114,6 +134,7 @@
 .draw-tool-btn.clear-btn {
 	color: #ff4444;
 }
+
 .draw-tool-btn.clear-btn:hover {
 	background: rgba(255, 68, 68, 0.1);
 	color: #ff6666;

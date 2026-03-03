@@ -349,7 +349,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 		};
 	}, [isPlaying, activeTool, fps, inPoint, outPoint, setActiveTool, stepFrame, node?.annotations, handleSeekToFrame, nav, undo, redo, setInPoint, setOutPoint, isFlipped, showAnnotations, setShowAnnotations, onToggleFullscreen, togglePlay]);
 
-	const wrappedHandleClearAnnotation = () => handleClearAnnotation(currentFrame);
+	const wrappedHandleClearAnnotation = React.useCallback(() => handleClearAnnotation(currentFrame), [handleClearAnnotation, currentFrame]);
+
+	const videoAreaCallbackRef = React.useCallback((el: HTMLDivElement | null) => {
+		(videoAreaRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+		nav.containerRef.current = el;
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const formatTime = (time: number) => {
 		if (showFrames) {
@@ -384,7 +389,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 		const sortedFrames = Array.from(annotatedFrames).sort((a, b) => a - b);
 
 		if (sortedFrames.length === 0) {
-			alert('No annotations or comments to export.');
+			addNotification('No annotations or comments to export', 'info');
 			if (wasPlaying) video.play();
 			return;
 		}
@@ -532,7 +537,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, nodeId, isFullscr
 			<div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0 }}>
 				<div
 					className="video-area"
-					ref={(el) => { (videoAreaRef as React.MutableRefObject<HTMLDivElement | null>).current = el; nav.containerRef.current = el; }}
+					ref={videoAreaCallbackRef}
 					onWheel={nav.handleWheel}
 					onMouseDown={nav.handleMouseDown}
 					onMouseMove={nav.handleMouseMove}

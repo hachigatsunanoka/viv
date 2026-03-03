@@ -46,7 +46,7 @@ export const Whiteboard: React.FC = () => {
 		nodes, view, panView, zoomView, addNode, addConnection,
 		activeNodeId, clearSelection, setActiveNodeId, setSelectedNodes,
 		updateConnection, connections,
-		dotGridEnabled, dotGridPitch,
+		dotGridEnabled, dotGridPitch, canvasOpacity,
 		activeTool, setActiveTool, pushHistory,
 		penColor, setPenColor, penThickness, setPenThickness, clearDrawings
 	} = useStore(
@@ -65,6 +65,7 @@ export const Whiteboard: React.FC = () => {
 			connections: s.connections,
 			dotGridEnabled: s.dotGridEnabled,
 			dotGridPitch: s.dotGridPitch,
+			canvasOpacity: s.canvasOpacity,
 			activeTool: s.activeTool,
 			setActiveTool: s.setActiveTool,
 			pushHistory: s.pushHistory,
@@ -191,11 +192,8 @@ export const Whiteboard: React.FC = () => {
 
 	useBrowserInteractions(view, addNode, containerRef, setSelectedNodes, handleDownloadUrl);
 
-	const handleWheel = (e: React.WheelEvent) => {
-		// Zoom with wheel (no modifier needed)
+	const handleWheel = React.useCallback((e: React.WheelEvent) => {
 		e.preventDefault();
-		// Adjust sensitivity as needed. Default deltaY is usually around 100.
-		// Use cursor position as center
 		const rect = containerRef.current?.getBoundingClientRect();
 		if (rect) {
 			const centerX = e.clientX - rect.left;
@@ -204,7 +202,7 @@ export const Whiteboard: React.FC = () => {
 		} else {
 			zoomView(e.deltaY, undefined, ZOOM_SENSITIVITY_WHEEL);
 		}
-	};
+	}, [zoomView]);
 
 	const handleMouseDown = (e: React.MouseEvent) => {
 		// Right click drag -> zoom
@@ -436,23 +434,23 @@ export const Whiteboard: React.FC = () => {
 		setContextMenu({ x: pageX, y: pageY, targetType, targetId });
 	}, []);
 
-	const handleCloseContextMenu = () => {
+	const handleCloseContextMenu = React.useCallback(() => {
 		setContextMenu(null);
-	};
+	}, []);
 
 
 
 
-	const handleNanoBanana = (nodeId: string) => {
+	const handleNanoBanana = React.useCallback((nodeId: string) => {
 		setActiveNanoBananaNodeId(nodeId);
-	};
+	}, []);
 
-	const handleNanoBananaGenerate = (dataUrl: string) => {
+	const handleNanoBananaGenerate = React.useCallback((dataUrl: string) => {
 		if (!activeNanoBananaNodeId) return;
-		const sourceNode = nodes.find(n => n.id === activeNanoBananaNodeId);
+		const sourceNode = useStore.getState().nodes.find(n => n.id === activeNanoBananaNodeId);
 		if (!sourceNode) return;
 
-		const newNode = {
+		addNode({
 			id: crypto.randomUUID(),
 			type: 'image' as const,
 			x: sourceNode.x + sourceNode.width + 20,
@@ -460,18 +458,17 @@ export const Whiteboard: React.FC = () => {
 			width: sourceNode.width,
 			height: sourceNode.height,
 			content: dataUrl,
-		};
-
-		addNode(newNode);
+		});
 		setActiveNanoBananaNodeId(null);
-	};
+	}, [activeNanoBananaNodeId, addNode]);
 
 
-	const handleAddText = () => {
+	const handleAddText = React.useCallback(() => {
 		if (!contextMenu) return;
 
-		const worldX = (contextMenu.x - view.x) / view.zoom;
-		const worldY = (contextMenu.y - view.y) / view.zoom;
+		const { x: vx, y: vy, zoom: vz } = useStore.getState().view;
+		const worldX = (contextMenu.x - vx) / vz;
+		const worldY = (contextMenu.y - vy) / vz;
 
 		const newNode = {
 			id: crypto.randomUUID(),
@@ -487,13 +484,14 @@ export const Whiteboard: React.FC = () => {
 
 		addNode(newNode);
 		setSelectedNodes([newNode.id]);
-	};
+	}, [contextMenu, addNode, setSelectedNodes]);
 
-	const handleAddMarkdown = () => {
+	const handleAddMarkdown = React.useCallback(() => {
 		if (!contextMenu) return;
 
-		const worldX = (contextMenu.x - view.x) / view.zoom;
-		const worldY = (contextMenu.y - view.y) / view.zoom;
+		const { x: vx, y: vy, zoom: vz } = useStore.getState().view;
+		const worldX = (contextMenu.x - vx) / vz;
+		const worldY = (contextMenu.y - vy) / vz;
 
 		const newNode = {
 			id: crypto.randomUUID(),
@@ -507,25 +505,26 @@ export const Whiteboard: React.FC = () => {
 
 		addNode(newNode);
 		setSelectedNodes([newNode.id]);
-	};
+	}, [contextMenu, addNode, setSelectedNodes]);
 
-	const handleToggleLayoutMode = () => {
+	const handleToggleLayoutMode = React.useCallback(() => {
 		if (!contextMenu?.targetId) return;
 
-		const targetNode = nodes.find(n => n.id === contextMenu.targetId);
+		const state = useStore.getState();
+		const targetNode = state.nodes.find(n => n.id === contextMenu.targetId);
 		if (!targetNode || targetNode.type !== 'backdrop') return;
 
 		pushHistory();
-		useStore.getState().updateNode(targetNode.id, {
+		state.updateNode(targetNode.id, {
 			layoutMode: targetNode.layoutMode === 'column' ? 'freeform' : 'column'
 		});
-	};
+	}, [contextMenu?.targetId, pushHistory]);
 
 	return (
 		<div
 			ref={containerRef}
 			className={`whiteboard-container ${isPanning ? 'dragging' : ''}`}
-			style={{ cursor: isPanning ? 'grabbing' : 'default', backgroundSize: `${dotGridPitch * view.zoom}px ${dotGridPitch * view.zoom}px`, backgroundPosition: `${view.x}px ${view.y}px`, backgroundImage: dotGridEnabled ? undefined : 'none' }}
+			style={{ cursor: isPanning ? 'grabbing' : 'default', '--dot-grid-size': `${dotGridPitch * view.zoom}px ${dotGridPitch * view.zoom}px`, '--dot-bg-pos': `${view.x}px ${view.y}px`, '--canvas-opacity': canvasOpacity / 100, '--dot-bg-image': dotGridEnabled ? 'radial-gradient(var(--color-bg-canvas-dot) 1px, transparent 1px)' : 'none' } as React.CSSProperties}
 			onWheel={handleWheel}
 			onMouseDown={handleMouseDown}
 			onMouseMove={handleMouseMove}
@@ -679,7 +678,7 @@ export const Whiteboard: React.FC = () => {
 									onClick={() => setPenColor(c)}
 									title="Color"
 								>
-									<div className="color-dot" style={{ backgroundColor: c === 'var(--color-text-primary)' ? 'currenColor' : c, ...(c === 'var(--color-text-primary)' ? { background: 'var(--color-text-primary)' } : {}) }} />
+									<div className="color-dot" style={{ backgroundColor: c === 'var(--color-text-primary)' ? 'currentColor' : c, ...(c === 'var(--color-text-primary)' ? { background: 'var(--color-text-primary)' } : {}) }} />
 								</button>
 							))}
 						</div>
