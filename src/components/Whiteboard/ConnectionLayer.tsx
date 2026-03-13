@@ -24,6 +24,7 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({
 	onSelectConnection,
 	onUpdateConnection,
 	onDeleteConnection,
+	onContextMenu,
 	zoom,
 }) => {
 	const { nodes, connections } = useStore(useShallow((state) => ({ nodes: state.nodes, connections: state.connections })));
